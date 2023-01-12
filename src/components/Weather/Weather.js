@@ -14,7 +14,7 @@ function Weather(props) {
   const [weatherData, setWeatherData] = useState({ response: false });
   const [city, setCity] = useState(props.city);
   const [temperature, setTemperature] = useState('');
-  const [windDescr, setWindDescr] = useState('km/h');
+  const [windDescr, setWindDescr] = useState('m/s');
   const [celsBtn, setCelsBtn] = useState(true);
   const [fahrBtn, setFahrBtn] = useState(false);
   
@@ -60,7 +60,7 @@ function Weather(props) {
   function intoCelsius(e) {
     e.preventDefault();
     search('units=metric');
-    setWindDescr('km/h');
+    setWindDescr('m/s');
     setCelsBtn(true);
     setFahrBtn(false);
   }
@@ -149,7 +149,7 @@ function Weather(props) {
                         <h3 className='main__current-temp' id='current-temp'>
                           {temperature}
                         </h3>
-                        <span>˚</span>
+                        <span className='main__current-icon'>˚</span>
                       </div>
                       <a
                         href='/'

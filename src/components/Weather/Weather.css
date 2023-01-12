@@ -231,15 +231,14 @@ main {
 .main__current-temp {
   width: 40px;
   text-align: right;
-  margin-top: 15px;
   font-weight: 700;
   font-size: 40px;
   display: inline-block;
   padding-top: -8px;
-  /* vertical-align: sub; */
 }
-.main__current-temp span {
-  vertical-align: sub;
+
+.main__current-icon {
+  vertical-align: top;
 }
 .main__current-humidity,
 .main__current-wind {
