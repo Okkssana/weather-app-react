@@ -337,7 +337,7 @@ ul {
   background-color: rgb(255 255 255 / 30%);
   padding: 10px;
   border-radius: 7px;
-  max-width: 101px;
+  width: 65px;
 }
 .main__week-item span {
   font-size: 24px;
