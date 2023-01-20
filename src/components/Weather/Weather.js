@@ -12,15 +12,29 @@ function Weather(props) {
   };
   let now = currentDate.toLocaleString('en-US', options);
   const [weatherData, setWeatherData] = useState({ response: false });
+  const [weatherResponse, setWeatherResponse] = useState(false);
   const [city, setCity] = useState(props.city);
   const [temperature, setTemperature] = useState('');
   const [windDescr, setWindDescr] = useState('m/s');
   const [celsBtn, setCelsBtn] = useState(true);
   const [fahrBtn, setFahrBtn] = useState(false);
-  
+  const [hourlyForecast, setHourlyForecast] = useState('');
+  const [dailyForecast, setDailyForecast] = useState('');
+
+  function weekFormat(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let day = days[date.getDay()];
+    return day;
+  }
+
+  function showHourlyDailyForecast(response) {
+    setHourlyForecast(response.data.hourly);
+    setDailyForecast(response.data.daily);
+    setWeatherResponse(true);
+  }
 
   function handleResponse(response) {
-    console.log(response.data);
     setWeatherData({
       response: true,
       city: response.data.name,
@@ -28,10 +42,12 @@ function Weather(props) {
       description: response.data.weather[0].description,
       humidity: response.data.main.humidity,
       wind: Math.round(response.data.wind.speed),
-      temp: Math.round(response.data.main.temp),
       img: `/images/${response.data.weather[0].icon}.png`,
+      lon: response.data.coord.lon,
+      lat: response.data.coord.lat,
     });
     setTemperature(Math.round(response.data.main.temp));
+    setCity(response.data.name);
   }
 
   function handleSubmit(e) {
@@ -42,12 +58,21 @@ function Weather(props) {
   }
   function handleCityChange(e) {
     setCity(e.target.value);
-    console.log(e.target.value);
   }
   function search(m) {
-    const apiKey = '&appid=6a48a550fc04f170639e60d52b8a6bc5';
+    const apiKey = '&appid=a969311cfcbb4a83dfad2cf7478397f9';
     let currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&${m}${apiKey}`;
     axios.get(currentUrl).then(handleResponse);
+
+    axios
+      .get(currentUrl)
+      .then((res) =>
+        axios
+          .get(
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&${m}&appid=a969311cfcbb4a83dfad2cf7478397f9`
+          )
+          .then(showHourlyDailyForecast)
+      );
   }
 
   function intoFahrenheit(e) {
@@ -68,18 +93,21 @@ function Weather(props) {
   function getCurrentPosition(e) {
     e.preventDefault();
     navigator.geolocation.getCurrentPosition(showPosition);
-    console.log(showPosition);
   }
-  
+
   function showPosition(position) {
-    console.log(position)
-    let apiKey = '6a48a550fc04f170639e60d52b8a6bc5';
+    let apiKey = 'a969311cfcbb4a83dfad2cf7478397f9';
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric`;
+    let oneCallUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&units=metric&appid=a969311cfcbb4a83dfad2cf7478397f9`;
     axios.get(`${apiUrl}&appid=${apiKey}`).then(handleResponse);
+    axios.get(`${oneCallUrl}&appid=${apiKey}`).then(showHourlyDailyForecast);
+    setCelsBtn(true);
+    setFahrBtn(false);
   }
-  if (weatherData.response) {
+
+  if (weatherResponse) {
     return (
       <div className='wrapper'>
         <header className='header'>
@@ -151,22 +179,24 @@ function Weather(props) {
                         </h3>
                         <span className='main__current-icon'>˚</span>
                       </div>
-                      <a
-                        href='/'
-                        className={`celsius-link ${celsBtn ? 'active' : ''}`}
-                        id='celsius'
-                        onClick={intoCelsius}
-                      >
-                        C
-                      </a>
-                      <a
-                        href='/'
-                        className={`celsius-link ${fahrBtn ? 'active' : ''}`}
-                        id='fahrenheit'
-                        onClick={intoFahrenheit}
-                      >
-                        F
-                      </a>
+                      <div className='celsius-link-box'>
+                        <a
+                          href='/'
+                          className={`celsius-link ${celsBtn ? 'active' : ''}`}
+                          id='celsius'
+                          onClick={intoCelsius}
+                        >
+                          C
+                        </a>
+                        <a
+                          href='/'
+                          className={`celsius-link ${fahrBtn ? 'active' : ''}`}
+                          id='fahrenheit'
+                          onClick={intoFahrenheit}
+                        >
+                          F
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -186,12 +216,71 @@ function Weather(props) {
                     </p>
                   </div>
                   <div className='main__day-forecast'>
-                    <ul className='main__day-box' id='hourly-forecast'></ul>
+                    <ul className='main__day-box' id='hourly-forecast'>
+                      {hourlyForecast.map((item, index) => {
+                        let src = `images/${item.weather[0].icon}.png`;
+                        return index < 10 && index % 2 ? (
+                          <li key={index}>
+                            <div className='main__time-box'>
+                              <p className='main__day-time' id='time-now'>
+                                {new Date(item.dt * 1000).getHours()}
+                              </p>
+                              <p id='time-format'>00</p>
+                            </div>
+                            <img
+                              className='main__day-img'
+                              src={src}
+                              alt='img'
+                            />
+                            <p className='main__day-temp' id='day-temp-now'>
+                              {Math.round(item.temp)}
+                            </p>
+                            <span>˚</span>
+                          </li>
+                        ) : (
+                          ''
+                        );
+                      })}
+                    </ul>
                   </div>
                 </div>
               </div>
               <div className='main__week-forecast'>
-                <ul className='main__week-items' id='week-forecast'></ul>
+                <ul className='main__week-items' id='week-forecast'>
+                  {dailyForecast.map((item, index) => {
+                    let src = `images/${item.weather[0].icon}.png`;
+                    return index !== 0 && index < 7 ? (
+                      <li className='main__week-item' key={index}>
+                        <p className='main__week-day' id='day-1'>
+                          {weekFormat(item.dt)}
+                        </p>
+                        <img className='main__week-img' src={src} alt='img' />
+                        <div className='main__week-box'>
+                          <div className='main__week-max-box'>
+                            <span
+                              className='main__week-max-temp'
+                              id='max-temp1'
+                            >
+                              {Math.round(item.temp.max)}
+                            </span>
+                            <span className='main__week-max-deg'>˚</span>
+                          </div>
+                          <div className='main__week-min-box'>
+                            <span
+                              className='main__week-min-temp'
+                              id='min-temp1'
+                            >
+                              {Math.round(item.temp.min)}
+                            </span>
+                            <span className='main__week-min-deg'>˚</span>
+                          </div>
+                        </div>
+                      </li>
+                    ) : (
+                      ''
+                    );
+                  })}
+                </ul>
               </div>
             </div>
           </div>

@@ -79,7 +79,9 @@ body {
 :before {
   box-sizing: inherit;
 }
-.root, .App, .wrapper {
+.root,
+.App,
+.wrapper {
   height: 100%;
 }
 .wrapper {
@@ -145,6 +147,7 @@ main {
 .main__temp-box {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-top: 20px;
 }
 .fahrenheit-link,
@@ -320,6 +323,11 @@ ul {
 .main__week-forecast {
   margin-top: 60px;
 }
+.main__week-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
 .main__week-max-box,
 .main__week-min-box {
   display: inline-block;
@@ -344,7 +352,6 @@ ul {
   margin-bottom: 5px;
 }
 .main__week-max-temp {
-  margin-top: 5px;
   font-weight: 700;
 }
 .main__week-max-deg {
@@ -386,7 +393,6 @@ ul {
   text-align: center;
 }
 
-
 @media (max-width: 880px) {
   .header__content {
     justify-content: space-evenly;
@@ -419,7 +425,6 @@ ul {
   }
   .main__current-temp {
     margin-top: 0;
-    /* margin-bottom: 10px; */
     font-size: 30px;
   }
   .main__current-left-box {
@@ -575,6 +580,9 @@ ul {
     background-color: transparent;
     padding: 5px;
   }
+  .main__week-box {
+    flex-direction: column;
+  }
   .main__week-item {
     max-width: 45px;
   }
@@ -592,6 +600,11 @@ ul {
   }
   .main__temp-box {
     margin-top: 5px;
+    flex-direction: column;
+  }
+  .main__current-temp-box{
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
   .main__day-time {
     font-size: 17px;
@@ -617,11 +630,14 @@ ul {
     font-size: 17px;
     background-color: rgb(2 80 221 / 15%);
     padding: 0;
-    max-width: 220px;
+    max-width: 185px;
     margin-top: 10px;
   }
   .main__current-left-box {
-    width: 120px;
+    max-width: 90px;
+  }
+  .main__current-temp{
+    display: inline;
   }
   .main__day-forecast {
     margin-top: 10px;
