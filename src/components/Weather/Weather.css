@@ -79,10 +79,10 @@ body {
 :before {
   box-sizing: inherit;
 }
-.root,
+
 .App,
 .wrapper {
-  height: 100%;
+  height: 100vh;
 }
 .wrapper {
   display: flex;
