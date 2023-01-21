@@ -16,11 +16,15 @@ function Weather(props) {
   const [city, setCity] = useState(props.city);
   const [temperature, setTemperature] = useState('');
   const [windDescr, setWindDescr] = useState('m/s');
+  const [units, setUnits] = useState(props.unit);
   const [celsBtn, setCelsBtn] = useState(true);
   const [fahrBtn, setFahrBtn] = useState(false);
   const [hourlyForecast, setHourlyForecast] = useState('');
   const [dailyForecast, setDailyForecast] = useState('');
-
+  React.useEffect(() => {
+    search();
+    // eslint-disable-next-line
+  }, [units]);
   function weekFormat(timestamp) {
     let date = new Date(timestamp * 1000);
     let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -59,9 +63,9 @@ function Weather(props) {
   function handleCityChange(e) {
     setCity(e.target.value);
   }
-  function search(m) {
+  function search() {
     const apiKey = '&appid=a969311cfcbb4a83dfad2cf7478397f9';
-    let currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&${m}${apiKey}`;
+    let currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&${units}${apiKey}`;
     axios.get(currentUrl).then(handleResponse);
 
     axios
@@ -69,7 +73,7 @@ function Weather(props) {
       .then((res) =>
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&${m}&appid=a969311cfcbb4a83dfad2cf7478397f9`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&${units}&appid=a969311cfcbb4a83dfad2cf7478397f9`
           )
           .then(showHourlyDailyForecast)
       );
@@ -77,14 +81,16 @@ function Weather(props) {
 
   function intoFahrenheit(e) {
     e.preventDefault();
-    search('units=imperial');
+    // search('units=imperial');
+    setUnits('units=imperial');
     setWindDescr('mph');
     setCelsBtn(false);
     setFahrBtn(true);
   }
   function intoCelsius(e) {
     e.preventDefault();
-    search('units=metric');
+    // search('units=metric');
+    setUnits('units=metric');
     setWindDescr('m/s');
     setCelsBtn(true);
     setFahrBtn(false);
@@ -99,12 +105,12 @@ function Weather(props) {
     let apiKey = 'a969311cfcbb4a83dfad2cf7478397f9';
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
-    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric`;
-    let oneCallUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&units=metric&appid=a969311cfcbb4a83dfad2cf7478397f9`;
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&${units}`;
+    let oneCallUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&${units}&appid=a969311cfcbb4a83dfad2cf7478397f9`;
     axios.get(`${apiUrl}&appid=${apiKey}`).then(handleResponse);
     axios.get(`${oneCallUrl}&appid=${apiKey}`).then(showHourlyDailyForecast);
-    setCelsBtn(true);
-    setFahrBtn(false);
+    // setCelsBtn(true);
+    // setFahrBtn(false);
   }
 
   if (weatherResponse) {
@@ -300,7 +306,7 @@ function Weather(props) {
       </div>
     );
   } else {
-    search('units=metric');
+    search();
     return (
       <div className='wrapper'>
         <header className='header'>
