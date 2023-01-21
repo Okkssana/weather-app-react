@@ -585,18 +585,16 @@ ul {
   }
   .main__week-item {
     max-width: 45px;
+    padding: 7px;
   }
   .main__week-item span {
-    font-size: 20px;
+    font-size: 18px;
   }
   .main__week-img {
     width: 25px;
   }
   .main__week-day {
-    font-size: 20px;
-  }
-  .main__week-item {
-    padding: 7px;
+    font-size: 18px;
   }
   .main__temp-box {
     margin-top: 5px;
