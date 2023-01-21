@@ -424,7 +424,7 @@ ul {
     max-width: 550px;
   }
   .main__current-temp {
-    margin-top: 0;
+    margin-top: 5px;
     font-size: 30px;
   }
   .main__current-left-box {
