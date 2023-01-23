@@ -64,7 +64,7 @@ function Weather(props) {
     setCity(e.target.value);
   }
   function search() {
-    const apiKey = '&appid=a969311cfcbb4a83dfad2cf7478397f9';
+    const apiKey = '&appid=97f8e93f00107773f88eafd933ce86b7';
     let currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&${units}${apiKey}`;
     axios.get(currentUrl).then(handleResponse);
 
@@ -73,7 +73,7 @@ function Weather(props) {
       .then((res) =>
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&${units}&appid=a969311cfcbb4a83dfad2cf7478397f9`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&${units}&appid=97f8e93f00107773f88eafd933ce86b7`
           )
           .then(showHourlyDailyForecast)
       );
@@ -102,11 +102,11 @@ function Weather(props) {
   }
 
   function showPosition(position) {
-    let apiKey = 'a969311cfcbb4a83dfad2cf7478397f9';
+    let apiKey = '97f8e93f00107773f88eafd933ce86b7';
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&${units}`;
-    let oneCallUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&${units}&appid=a969311cfcbb4a83dfad2cf7478397f9`;
+    let oneCallUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&${units}&appid=97f8e93f00107773f88eafd933ce86b7`;
     axios.get(`${apiUrl}&appid=${apiKey}`).then(handleResponse);
     axios.get(`${oneCallUrl}&appid=${apiKey}`).then(showHourlyDailyForecast);
     // setCelsBtn(true);
